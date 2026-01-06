@@ -1,4 +1,5 @@
 #include "WifiAsyncWebServer.h"
+volatile bool g_libmapper_network_ready = false;
 extern lv_obj_t *img1;
 const char *host = "dial";
 const int default_webserverporthttp = 80;
@@ -297,6 +298,7 @@ void handleUpload(AsyncWebServerRequest *request, String filename, size_t index,
     request->redirect("/");
   }
 }
+
 // handles updata   用于ota
 void handleUpdate(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
@@ -436,6 +438,8 @@ void wifi_server_begin(void *parameter) {
   }
   if (wifi_mode == 1) {
     Serial.println("WIFI-STA连接成功");
+ 
+
     Serial.println("\n\nNetwork Configuration:");
     Serial.println("----------------------");
     Serial.print("         SSID: ");
@@ -450,6 +454,8 @@ void wifi_server_begin(void *parameter) {
     Serial.print("           IP: ");
     Serial.println(WiFi.localIP());
     lv_label_set_text(ui_Label3, ("STA:" + WiFi.localIP().toString()).c_str());
+
+    g_libmapper_network_ready = true;
   }
   if (wifi_mode == 2) {
     char mac_tmp[6];

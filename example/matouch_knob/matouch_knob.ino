@@ -33,6 +33,7 @@ void setup()
 {
   // monitoring port
   Serial.begin(115200);
+
   delay(100);
   ffat_init();
   if (!EEPROM.begin(1000))

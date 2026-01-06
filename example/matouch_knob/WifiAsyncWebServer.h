@@ -10,6 +10,9 @@
 #include <Preferences.h>
 #include <Update.h>
 #include "lvgl.h"
+
+extern volatile bool g_libmapper_network_ready;
+
 #include "ui.h"
 #define FILESYSTEM FFat
 // You only need to format the filesystem once
