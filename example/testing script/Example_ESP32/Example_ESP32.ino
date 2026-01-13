@@ -4,8 +4,8 @@
 // For disabling power saving
 #include "esp_wifi.h"
 
-const char* ssid = "WIFI_SSID";
-const char* password = "WIFI_PASSWORD";
+const char* ssid = "Galaxy";
+const char* password = "1q2w3e4r";
 
 mpr_dev dev = 0;
 mpr_sig inputSignal = 0;
@@ -30,7 +30,7 @@ void setup() {
   dev = mpr_dev_new("ESP32", 0);
   outputSignal = mpr_sig_new(dev, MPR_DIR_OUT, "valueToSend", 1, MPR_FLT, "V",
                              &signalMin, &signalMax, 0, 0, 0);
-  inputSignal = mpr_sig_new(dev, MPR_DIR_OUT, "valueReceived", 1, MPR_FLT, "V",
+  inputSignal = mpr_sig_new(dev, MPR_DIR_IN, "valueReceived", 1, MPR_FLT, "V",
                             &signalMin, &signalMax, 0, inputSignalHandler,
                             MPR_SIG_UPDATE);
 }
