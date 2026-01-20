@@ -2,13 +2,14 @@ import libmapper as mpr
 
 
 def on_input(signal, event, id, value, time):
-    try:
-        if event == mpr.Signal.Event.UPDATE:
-            print(f"Recieved value: {value}")
-        else:
-            print('Else')
-    except:
-        print('Exception')
+    # try:
+    #     if event == mpr.Signal.Event.REMOTE_UPDATE:
+    #         print(f"Received value: {value}")
+    #     else:
+    #         print('Else')
+    # except Exception as e:
+    #     print('Exception',e)
+    print(signal,event,value)
 
 
 dev = mpr.Device("my_device")
