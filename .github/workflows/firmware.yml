@@ -61,7 +61,8 @@ jobs:
               - name: Simple FOC
                 version: 2.3.2
               - name: libmapper
-                source-url: https://github.com/ucalgary-shivers/libmapper-arduino/archive/refs/heads/1-update-to-libmapper-251.zip
+                source-url: https://${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/ucalgary-shivers/libmapper-arduino/archive/refs/heads/1-update-to-libmapper-251.zip
+                source-path: libmapper-arduino-1-update-to-libmapper-251
             sketch-paths: |
               - example/matouch_knob/
             fqbn: "esp32:esp32:esp32s3:CDCOnBoot=cdc,CPUFreq=240,FlashMode=qio,FlashSize=16M,PartitionScheme=app3M_fat9M_16MB,PSRAM=opi,LoopCore=1,EventsCore=1" # from build.options.json in sketch build folder, without default/upload options: UploadSpeed=921600,USBMode=default,MSCOnBoot=default,DFUOnBoot=default,UploadMode=default,JTAGAdapter=default,DebugLevel=none,EraseFlash=all
