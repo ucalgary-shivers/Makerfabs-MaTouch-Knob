@@ -9,7 +9,6 @@
 #include "motor_task.h"
 #include "display_task.h"
 
-
 extern volatile bool g_libmapper_network_ready;
 
 mpr_dev dev = 0;
@@ -17,20 +16,23 @@ mpr_sig inputSignal = 0;
 mpr_sig outputSignal = 0;
 float seqNumber = 0;
 float receivedValue = 0;
-
+float signalMin = 0.0f;
+float signalMax = 3600.0f;
 
 void inputSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
                         mpr_type type, const void* value, mpr_time time) {
-                            
   receivedValue = *((float*)value);
+  Serial.print("inputSignalHandler: ");
+  Serial.println(receivedValue);
+  
 }
-
 
 void libmapper_run(void* parameter) {
 
     Serial.println("[LM] libmapper task started");
 
-    while (!g_libmapper_network_ready) {
+
+    while (! g_libmapper_network_ready) {
         Serial.println("[LM] Waiting for libmapper network ready...");
         vTaskDelay(300);
     }
@@ -40,15 +42,15 @@ void libmapper_run(void* parameter) {
     vTaskDelay(200);
 
     Serial.println("[LM] Creating mapper::Device...");
-      float signalMin = 0.0f;
+    float signalMin = 0.0f;
     float signalMax = 3600.0f;
 
     dev = mpr_dev_new("ESP32", 0);
     outputSignal = mpr_sig_new(dev, MPR_DIR_OUT, "valueToSend", 1, MPR_FLT, "V",
-                               &signalMin, &signalMax, 0, 0, 0);
+                             &signalMin, &signalMax, 0, 0, 0);
     inputSignal = mpr_sig_new(dev, MPR_DIR_IN, "valueReceived", 1, MPR_FLT, "V",
-                               &signalMin, &signalMax, 0, inputSignalHandler,
-                               MPR_SIG_UPDATE);
+                            &signalMin, &signalMax, 0, inputSignalHandler,
+                            MPR_SIG_UPDATE);
     Serial.println("[LM] mapper::Device created");
 
 
@@ -77,7 +79,7 @@ void libmapper_run(void* parameter) {
                 img_angle = 3600 - (uint16_t)(abs(adjusted_angle) * 573) % 3600;
 
             
-            mpr_sig_set_value(outputSignal, 0, 3600, MPR_FLT, &img_angle);
+            mpr_sig_set_value(outputSignal, 0, 1, MPR_FLT, &img_angle);
             
             Serial.print("[LM] Sent: ");
             Serial.println(img_angle);
