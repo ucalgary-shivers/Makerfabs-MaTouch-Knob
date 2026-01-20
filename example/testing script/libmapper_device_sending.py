@@ -27,4 +27,5 @@ temp = 0.0
 while True:
     dev.poll(100)
     sig_in.set_value(temp)
+    print("send",temp)
     temp = temp + 0.01
