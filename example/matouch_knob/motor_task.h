@@ -5,6 +5,7 @@
 #include "Wire.h"
 #include <SPI.h>
 #include "EEPROM.h"
+#include "libmapper_state.h"
 
 #define MO1 GPIO_NUM_17
 #define MO2 GPIO_NUM_16
@@ -280,6 +281,16 @@ void motor_run(void* parameter) {
         motor.move(0);
       } else {
         float torque = motor.PID_velocity(-angle_to_detent_center + dead_zone_adjustment);
+
+        LibmapperState lib_state;
+
+        if (xQueuePeek(libmmaper_state_queue_, &lib_state, 0) == pdTRUE)
+        {
+            if (lib_state.isLibmapperMode){
+              torque = lib_state.torque;
+            }
+        }
+
 #if SK_INVERT_ROTATION
         torque = -torque;
 #endif

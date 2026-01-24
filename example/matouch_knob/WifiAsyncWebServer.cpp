@@ -1,5 +1,4 @@
 #include "WifiAsyncWebServer.h"
-volatile bool g_libmapper_network_ready = false;
 extern lv_obj_t *img1;
 const char *host = "dial";
 const int default_webserverporthttp = 80;
@@ -455,7 +454,7 @@ void wifi_server_begin(void *parameter) {
     Serial.println(WiFi.localIP());
     lv_label_set_text(ui_Label3, ("STA:" + WiFi.localIP().toString()).c_str());
 
-    g_libmapper_network_ready = true;
+    update_libmapper_bool(LibmapperField::network_ready, true);
   }
   if (wifi_mode == 2) {
     char mac_tmp[6];

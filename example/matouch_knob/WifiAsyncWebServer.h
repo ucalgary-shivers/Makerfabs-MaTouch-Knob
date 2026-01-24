@@ -10,8 +10,7 @@
 #include <Preferences.h>
 #include <Update.h>
 #include "lvgl.h"
-
-extern volatile bool g_libmapper_network_ready;
+#include "libmapper_state.h"
 
 #include "ui.h"
 #define FILESYSTEM FFat

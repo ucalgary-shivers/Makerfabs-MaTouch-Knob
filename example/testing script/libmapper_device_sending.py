@@ -15,17 +15,21 @@ dev = mpr.Device("my_device2")
 
 sig_in = dev.add_signal(
     mpr.Direction.OUTGOING,
-    "out",
+    "torque",
     1,
-    mpr.Type.FLOAT, 'angle', 0, 3600, None, None
+    mpr.Type.FLOAT, 'angle', 0, 5, None, None
 )
-
+sig_mode = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "mode_1",
+    1,
+    mpr.Type.INT32, 'angle', 0, 1, None, None
+)
 
 temp = 0.0
 
 
 while True:
     dev.poll(100)
-    sig_in.set_value(temp)
-    print("send",temp)
-    temp = temp + 0.01
+    sig_in.set_value(2)
+    sig_mode.set_value(1)

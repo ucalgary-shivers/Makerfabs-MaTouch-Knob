@@ -24,6 +24,9 @@
 #include "interface.h"
 #include "libmapper_task.h"
 
+extern xQueueHandle libmmaper_state_queue_;
+extern SemaphoreHandle_t libmapper_mutex;
+
 TaskHandle_t xTask1;
 TaskHandle_t xTask2;
 TaskHandle_t xTask3;
@@ -50,6 +53,9 @@ void setup()
   assert(queue_ != NULL);
   knob_state_queue_ = xQueueCreate(1, sizeof(KnobState));
   assert(knob_state_queue_ != NULL);
+  libmmaper_state_queue_ = xQueueCreate(1, sizeof(LibmapperState));
+  assert(libmmaper_state_queue_ != NULL);
+  libmapper_mutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(
       interface_run,
       "interface_run",
