@@ -17,7 +17,7 @@ sig_in = dev.add_signal(
     mpr.Direction.OUTGOING,
     "torque",
     1,
-    mpr.Type.FLOAT, 'angle', 0, 5, None, None
+    mpr.Type.FLOAT, 'angle', -5, 5, None, None
 )
 sig_mode = dev.add_signal(
     mpr.Direction.OUTGOING,
