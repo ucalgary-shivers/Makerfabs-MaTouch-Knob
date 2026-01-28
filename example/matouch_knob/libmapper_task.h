@@ -17,6 +17,16 @@ mpr_sig inputSignal = 0;
 mpr_sig outputSignal_angle = 0;
 mpr_sig inputSignal_torque = 0;
 mpr_sig inputSignal_mode = 0;
+
+//detent libmapper signals
+mpr_sig inputSignal_detent_num_positions = 0; 
+mpr_sig inputSignal_detent_position = 0; 
+mpr_sig inputSignal_detent_width = 0; 
+mpr_sig inputSignal_detent_strength = 0; 
+mpr_sig inputSignal_detent_endstop_strength = 0; 
+mpr_sig inputSignal_detent_snap_point = 0; 
+
+
 float seqNumber = 0;
 float receivedValue = 0;
 
@@ -28,6 +38,19 @@ float torqueMax = 5.0f;
 
 int modeMin = 0;
 int modeMax = 1;
+
+//detent parameter
+
+int positionMin = 0;
+int positionMax = 360;
+
+float widthMin = 0.0f;
+float widthMax = 360.0f;
+
+float snapMin = 0.0f;
+float snapMax = 2.0f;
+
+
 
 void inputSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
                         mpr_type type, const void* value, mpr_time time) {
@@ -54,6 +77,65 @@ void modeSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
     Serial.println(receivedValue);
 
     update_libmapper_bool(LibmapperField::IsLibmapperMode, (bool)receivedValue);
+}
+
+void num_positions_SignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((int*)value);
+    Serial.print("num_positions_SignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_int(LibmapperField::num_positions, receivedValue);
+
+}
+
+void positionSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((int*)value);
+    Serial.print("positionSignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_int(LibmapperField::position, receivedValue);
+
+}
+
+void widthSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((float*)value);
+    Serial.print("widthSignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_float(LibmapperField::position_width_radians, receivedValue);
+
+}
+
+void detent_strengthSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((float*)value);
+    Serial.print("detent_strengthSignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_float(LibmapperField::detent_strength_unit, receivedValue);
+
+}
+
+void endstop_strengthSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((float*)value);
+    Serial.print("endstop_strengthSignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_float(LibmapperField::endstop_strength_unit, receivedValue);
+
+}
+
+void snap_pointSignalHandler(mpr_sig sig, mpr_sig_evt evt, mpr_id inst, int length,
+                        mpr_type type, const void* value, mpr_time time) {
+    receivedValue = *((float*)value);
+    Serial.print("snap_pointSignalHandler: ");
+    Serial.println(receivedValue);
+
+    update_libmapper_float(LibmapperField::snap_point, receivedValue);
 
 }
 
@@ -73,6 +155,35 @@ void define_device(){
                             MPR_SIG_UPDATE);    
     inputSignal_mode = mpr_sig_new(dev, MPR_DIR_IN, "IsLibmapperMode", 1,  MPR_INT32, "V",
                             &modeMin, &modeMax, 0, modeSignalHandler,
+                            MPR_SIG_UPDATE);
+    inputSignal_mode = mpr_sig_new(dev, MPR_DIR_IN, "IsLibmapperMode", 1,  MPR_INT32, "V",
+                            &modeMin, &modeMax, 0, modeSignalHandler,
+                            MPR_SIG_UPDATE);
+}
+
+void define_detent_signal(){
+inputSignal_detent_num_positions = mpr_sig_new(dev, MPR_DIR_IN, "detent_num_positions", 1,  MPR_INT32, "V",
+                            &positionMin, &positionMax, 0, num_positions_SignalHandler,
+                            MPR_SIG_UPDATE);
+
+inputSignal_detent_position = mpr_sig_new(dev, MPR_DIR_IN, "detent_position", 1,  MPR_INT32, "V",
+                            &positionMin, &positionMax, 0, positionSignalHandler,
+                            MPR_SIG_UPDATE);
+
+inputSignal_detent_width = mpr_sig_new(dev, MPR_DIR_IN, "detent_width", 1,  MPR_FLT, "V",
+                            &widthMin, &widthMax, 0, widthSignalHandler,
+                            MPR_SIG_UPDATE);       
+
+inputSignal_detent_strength = mpr_sig_new(dev, MPR_DIR_IN, "detent_strength", 1,  MPR_FLT, "V",
+                            &torqueMin, &torqueMax, 0, detent_strengthSignalHandler,
+                            MPR_SIG_UPDATE);
+
+inputSignal_detent_endstop_strength = mpr_sig_new(dev, MPR_DIR_IN, "detent_endstop_strength", 1,  MPR_FLT, "V",
+                            &torqueMin, &torqueMax, 0, endstop_strengthSignalHandler,
+                            MPR_SIG_UPDATE);
+
+inputSignal_detent_snap_point = mpr_sig_new(dev, MPR_DIR_IN, "detent_snap_point", 1,  MPR_FLT, "V",
+                            &snapMin, &snapMax, 0, snap_pointSignalHandler,
                             MPR_SIG_UPDATE);
 }
 
@@ -108,6 +219,8 @@ void libmapper_run(void* parameter) {
     vTaskDelay(200);
 
     define_device();
+
+    define_detent_signal();
 
     Serial.println("[LM] mapper::Device created");
 

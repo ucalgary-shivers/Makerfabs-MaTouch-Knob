@@ -11,6 +11,7 @@
 #define MO2 GPIO_NUM_16
 #define MO3 GPIO_NUM_15
 static const int spiClk = 1000000; // 400KHz
+static constexpr float DEG_TO_RAD_F = _PI / 180.0f;
 SPIClass* hspi = NULL;
 #define MT6701_SDA 1
 #define MT6701_SCL 2
@@ -89,6 +90,27 @@ uint32_t last_debug = 0;
 float target_velocity = 0;
 float current_detent_center, last_angle;
 uint32_t last_publish = 0;
+
+LibmapperState lib_state;
+bool previous_mode = false;
+
+KnobConfig firmware_config = {
+  .num_positions = 0,
+  .position = 0,
+  .position_width_radians = 1 * _PI / 180,
+  .detent_strength_unit = 1,
+  .endstop_strength_unit = 1,
+  .snap_point = 1.1,
+};
+
+KnobConfig libmapper_config = {
+  .num_positions = 0,
+  .position = 0,
+  .position_width_radians = 1 * _PI / 180,
+  .detent_strength_unit = 1,
+  .endstop_strength_unit = 1,
+  .snap_point = 1.1,
+};
 
 KnobConfig config = {
   .num_positions = 0,
@@ -177,16 +199,94 @@ void motor_task_init() {
                            min(derivative_lower_strength, derivative_upper_strength),
                            max(derivative_lower_strength, derivative_upper_strength));
 }
+
+bool update_libmapper_state(){
+  if (xQueuePeek(libmmaper_state_queue_, &lib_state, 0) == pdFALSE)
+  {
+    lib_state = { false, 0.0f, 0.0f, false, 0, 0, 0.0f, 0.0f, 0.0f, 0.0f };
+  }
+
+  bool configsMatch = true;
+
+    if (libmapper_config.num_positions != lib_state.num_positions) {
+        configsMatch = false;
+    }
+
+    if (libmapper_config.position != lib_state.position) {
+        configsMatch = false;
+    }
+
+    float expected_width = lib_state.position_width_radians * DEG_TO_RAD_F;
+    if (std::fabs(libmapper_config.position_width_radians - expected_width) > 1e-6f) {
+        configsMatch = false;
+    }
+
+    if (libmapper_config.detent_strength_unit != lib_state.detent_strength_unit) {
+        configsMatch = false;
+    }
+
+    if (libmapper_config.endstop_strength_unit != lib_state.endstop_strength_unit) {
+        configsMatch = false;
+    }
+
+    if (libmapper_config.snap_point != lib_state.snap_point) {
+        configsMatch = false;
+    }
+
+  if (!configsMatch){
+    libmapper_config = {
+      .num_positions = lib_state.num_positions,
+      .position = lib_state.position,
+      .position_width_radians = lib_state.position_width_radians * _PI / 180,
+      .detent_strength_unit = lib_state.detent_strength_unit,
+      .endstop_strength_unit = lib_state.endstop_strength_unit,
+      .snap_point = lib_state.snap_point,
+    };
+  }
+  
+  return configsMatch;
+}
+
+void update_derivative_factor(){
+  const float derivative_lower_strength = config.detent_strength_unit * 0.08;
+              const float derivative_upper_strength = config.detent_strength_unit * 0.02;
+              const float derivative_position_width_lower = radians(3);
+              const float derivative_position_width_upper = radians(8);
+              const float raw = derivative_lower_strength + (derivative_upper_strength - derivative_lower_strength) / (derivative_position_width_upper - derivative_position_width_lower) * (config.position_width_radians - derivative_position_width_lower);
+              motor.PID_velocity.D = CLAMP(
+                                       raw,
+                                       min(derivative_lower_strength, derivative_upper_strength),
+                                       max(derivative_lower_strength, derivative_upper_strength));
+}
+
 void motor_run(void* parameter) {
+  /*
+  update_libmapper_state();
+
+  Serial.print("[LM] motor mode:");
+  Serial.println(lib_state.isLibmapperMode);
+  if (lib_state.isLibmapperMode) config = libmapper_config; else config = firmware_config;
+  if(previous_mode != lib_state.isLibmapperMode) {
+    update_derivative_factor();
+    previous_mode = lib_state.isLibmapperMode;
+  } */
+  
   motor_task_init();
   while (1) {
-    if (sleep_flag == 0) {
+    if (sleep_flag == 0) {     
+      bool result = update_libmapper_state();      
+      if(previous_mode != lib_state.isLibmapperMode || !result) {
+        if (lib_state.isLibmapperMode) config = libmapper_config; else config = firmware_config;
+        update_derivative_factor();
+        previous_mode = lib_state.isLibmapperMode;
+      }
       Command command;
       if (xQueueReceive(queue_, &command, 0) == pdTRUE) {
         switch (command.command_type) {
           case CommandType::CONFIG:
             {
-              config = command.data.config;
+              firmware_config = command.data.config;
+              if (lib_state.isLibmapperMode) config = libmapper_config; else config = firmware_config;
               Serial.println("Got new config");
               current_detent_center = motor.shaft_angle;
 #if SK_INVERT_ROTATION
@@ -201,15 +301,7 @@ void motor_run(void* parameter) {
               // get runaway due to sensor noise & lag)).
               // TODO: consider eliminating this D factor entirely and just "play" a hardcoded haptic "click" (e.g. a quick burst of torque in each
               // direction) whenever the position changes when the detent width is too small for the P factor to work well.
-              const float derivative_lower_strength = config.detent_strength_unit * 0.08;
-              const float derivative_upper_strength = config.detent_strength_unit * 0.02;
-              const float derivative_position_width_lower = radians(3);
-              const float derivative_position_width_upper = radians(8);
-              const float raw = derivative_lower_strength + (derivative_upper_strength - derivative_lower_strength) / (derivative_position_width_upper - derivative_position_width_lower) * (config.position_width_radians - derivative_position_width_lower);
-              motor.PID_velocity.D = CLAMP(
-                                       raw,
-                                       min(derivative_lower_strength, derivative_upper_strength),
-                                       max(derivative_lower_strength, derivative_upper_strength));
+              update_derivative_factor();
               break;
             }
           case CommandType::HAPTIC:
@@ -282,14 +374,10 @@ void motor_run(void* parameter) {
       } else {
         float torque = motor.PID_velocity(-angle_to_detent_center + dead_zone_adjustment);
 
-        LibmapperState lib_state;
-
-        if (xQueuePeek(libmmaper_state_queue_, &lib_state, 0) == pdTRUE)
-        {
-            if (lib_state.isLibmapperMode){
-              torque = lib_state.torque;
-            }
+        if (lib_state.isLibmapperMode){
+          torque += lib_state.torque;
         }
+
 
 #if SK_INVERT_ROTATION
         torque = -torque;

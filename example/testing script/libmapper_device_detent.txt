@@ -1,0 +1,77 @@
+import libmapper as mpr
+
+
+def on_input(signal, event, id, value, time):
+    print(f"Recieved value: {value}")
+    
+
+dev = mpr.Device("my_device2")
+
+sig_torque = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "torque",
+    1,
+    mpr.Type.FLOAT, 'angle', -5, 5, None, None
+)
+sig_mode = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "mode_1",
+    1,
+    mpr.Type.INT32, 'angle', 0, 1, None, None
+)
+
+sig_num_position = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "num_positions",
+    1,
+    mpr.Type.INT32, 'angle', 0, 360, None, None
+)
+
+sig_position = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "position",
+    1,
+    mpr.Type.INT32, 'angle', 0, 360, None, None
+)
+
+sig_width = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "width",
+    1,
+    mpr.Type.FLOAT, 'angle', 0, 360, None, None
+)
+
+sig_strength = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "strength",
+    1,
+    mpr.Type.FLOAT, 'angle', -5.0, 5.0, None, None
+)
+
+sig_end_strength = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "end_strength",
+    1,
+    mpr.Type.FLOAT, 'angle', -5.0, 5.0, None, None
+)
+
+sig_snap = dev.add_signal(
+    mpr.Direction.OUTGOING,
+    "snap",
+    1,
+    mpr.Type.FLOAT, 'angle', 0.0, 2.0, None, None
+)
+
+temp = 0.0
+
+
+while True:
+    dev.poll(100)
+    sig_torque.set_value(0)
+    sig_mode.set_value(1)
+    sig_num_position.set_value(0)
+    sig_position.set_value(0)
+    sig_strength.set_value(1)
+    sig_end_strength.set_value(1)
+    sig_width.set_value(45)
+    sig_snap.set_value(0.55)
