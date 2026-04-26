@@ -10,6 +10,8 @@
 #include <Preferences.h>
 #include <Update.h>
 #include "lvgl.h"
+#include "libmapper_state.h"
+
 #include "ui.h"
 #define FILESYSTEM FFat
 // You only need to format the filesystem once

@@ -22,15 +22,21 @@
 #include "motor_task.h"
 #include "display_task.h"
 #include "interface.h"
+#include "libmapper_task.h"
+
+extern xQueueHandle libmmaper_state_queue_;
+extern SemaphoreHandle_t libmapper_mutex;
 
 TaskHandle_t xTask1;
 TaskHandle_t xTask2;
 TaskHandle_t xTask3;
+TaskHandle_t xTask100;
 // static MotorTask motor_task = MotorTask();
 void setup()
 {
   // monitoring port
   Serial.begin(115200);
+
   delay(100);
   ffat_init();
   if (!EEPROM.begin(1000))
@@ -47,6 +53,9 @@ void setup()
   assert(queue_ != NULL);
   knob_state_queue_ = xQueueCreate(1, sizeof(KnobState));
   assert(knob_state_queue_ != NULL);
+  libmmaper_state_queue_ = xQueueCreate(1, sizeof(LibmapperState));
+  assert(libmmaper_state_queue_ != NULL);
+  libmapper_mutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(
       interface_run,
       "interface_run",
@@ -63,7 +72,14 @@ void setup()
       1,            /* 任务的优先级 */
       &xTask1,      /* 跟踪创建的任务的任务句柄 */
       1);           /* pin任务到核心0 */
-
+  xTaskCreatePinnedToCore(
+      libmapper_run,
+      "libmapper_task", /* 任务名称. */
+      8192,         /* 任务的堆栈大小 */
+      NULL,         /* 任务的参数 */
+      5,            /* 任务的优先级 */
+      &xTask100,      /* 跟踪创建的任务的任务句柄 */
+      1);           /* pin任务到核心0 */
   display_init();
   xTaskCreatePinnedToCore(
       display_run,

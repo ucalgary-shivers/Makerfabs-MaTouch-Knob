@@ -9,6 +9,8 @@
 #include "display_task.h"
 #include "Watchdog.h"
 #include "WifiAsyncWebServer.h"
+#include "libmapper_state.h"
+
 
 //******************Vincent
 #include "touch.h"
@@ -542,6 +544,9 @@ void interface_run(void *parameter)
         img_angle = (uint16_t)(adjusted_angle * 573) % 3600;
       else
         img_angle = 3600 - (uint16_t)(abs(adjusted_angle) * 573) % 3600;
+
+      update_libmapper_float(LibmapperField::anglePosition, (float)img_angle);
+
       // Serial.print(last_adjusted_angle);
       // Serial.print("/");
       // Serial.println(abs(adjusted_angle-last_adjusted_angle));
