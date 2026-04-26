@@ -22,27 +22,27 @@ Note:
 
 # MaTouch Knob
 
-## Intruduce
+## Introduction
 
-Inspired by foreign smart konb, the original intention was to create a desktop force feedback knob that could interact with a computer. The project starts with the most important motor, and chooses a large and cheap 3205 motor (the stock of Xiaomi Pentie motor) to achieve a large structure, and increases the practical function of Bluetooth hid (Roulette function), which can achieve the same function as surface dial.
+Inspired by foreign smart knob, the original intention was to create a desktop force feedback knob that could interact with a computer. The project starts with the most important motor, and chooses a large and cheap 3205 motor (the stock of Xiaomi Pentie motor) to achieve a large structure, and increases the practical function of Bluetooth hid (Roulette function), which can achieve the same function as surface dial.
 
 ## Feature
 
 Controller: ESP32-S3
 Motor: 3205B Brushless Motor
-Wireless: WiFi& Bluetooth 5.0
+Wireless: WiFi & Bluetooth 5.0
 LCD: 1.28", 240*240 resolution, driver GC9A01
 LCD interface: SPI
 Touch Panel Driver: CST816S
 USB: USB Native
-Power Supply: USB Type-C 5.0V(4.0V~5.25V); 3.7V Lipo battery
+Power Supply: USB Type-C 5.0V(4.0V~5.25V); 3.7V LiPo battery
 Button: Function button, Flash button and reset button
 
 ![main](md_pic/back.jpg)
 
 # Code
 
-## Complier Option
+## Compiler Option
 
 - Install board : ESP32 .
 - Install libraries：
