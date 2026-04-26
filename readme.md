@@ -14,41 +14,31 @@ Note:
 
 ![main](md_pic/main.jpg)
 
-# Makerfabs
-
-[Makerfabs home page](https://www.makerfabs.com/)
-
-[Makerfabs Wiki](https://wiki.makerfabs.com/)
-
-# MaTouch Knob
-
 ## Introduction
 
 Inspired by foreign smart knob, the original intention was to create a desktop force feedback knob that could interact with a computer. The project starts with the most important motor, and chooses a large and cheap 3205 motor (the stock of Xiaomi Pentie motor) to achieve a large structure, and increases the practical function of Bluetooth hid (Roulette function), which can achieve the same function as surface dial.
 
-## Feature
+## Features
 
-Controller: ESP32-S3
-Motor: 3205B Brushless Motor
-Wireless: WiFi & Bluetooth 5.0
-LCD: 1.28", 240*240 resolution, driver GC9A01
-LCD interface: SPI
-Touch Panel Driver: CST816S
-USB: USB Native
-Power Supply: USB Type-C 5.0V(4.0V~5.25V); 3.7V LiPo battery
-Button: Function button, Flash button and reset button
+- Controller: ESP32-S3
+- Motor: 3205B Brushless Motor
+- Wireless: WiFi & Bluetooth 5.0
+- LCD: 1.28", 240*240 resolution, driver GC9A01
+- LCD interface: SPI
+- Touch Panel Driver: CST816S
+- USB: USB Native
+- Power Supply: USB Type-C 5.0V(4.0V~5.25V); 3.7V LiPo battery
+- Button: Function button, Flash button and reset button
 
 ![main](md_pic/back.jpg)
 
-# Code
+## Development
 
-## Compiler Option
+### Compiler Options
 
 - Install board : ESP32 .
 - Install libraries：
-
-[ESP32-audioI2S]([GitHub - schreibfaul1/ESP32-audioI2S: Play mp3 files from SD via I2S](https://github.com/schreibfaul1/ESP32-audioI2S))
-
+  - [ESP32-audioI2S]([GitHub - schreibfaul1/ESP32-audioI2S: Play mp3 files from SD via I2S](https://github.com/schreibfaul1/ESP32-audioI2S))
 - Use type-c use cable connect USB-TTL to PC.
 - Select "ESP32-S3 DEV Module"
 - Select PSRAM "OPI PSRAM"
@@ -79,8 +69,13 @@ And install other libraries from Arduino Libraries Manager.
 // Use 2.0.0  Version SPIFFS     
 ```
 
+## Provenance
 
-## Code explain
+### Makerfabs
+
+[Makerfabs home page](https://www.makerfabs.com/)
+
+[Makerfabs Wiki](https://wiki.makerfabs.com/)
 
 ### matouch_knob
 
