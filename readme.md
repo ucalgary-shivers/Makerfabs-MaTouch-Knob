@@ -66,7 +66,6 @@ The [SHIVERS Group](https://github.com/ucalgary-shivers) at the University of Ca
   - Upload Speed: "921600"
   - USB Mode: "USB-OTG (TinyUSB)"
 - Compile.
-  - Note: compilation is verified via Continuous Integration with [.github/workflows/firmware.yml](.github/workflows/firmware.yml), please update documentation and workflow accordingly.
 - Tools > Port: select your device.
   - Note: compilation is verified via Continuous Integration with [.github/workflows/firmware.yml](.github/workflows/firmware.yml), please update documentation and workflow accordingly.
 - Upload.
