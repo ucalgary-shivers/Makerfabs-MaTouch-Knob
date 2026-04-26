@@ -6,6 +6,7 @@ Inspired by [Scott Bezek](https://github.com/scottbez1)'s [SmartKnob](https://gi
 
 The [SHIVERS Group](https://github.com/ucalgary-shivers) at the University of Calgary brings new software features:
 - updated documentation
+- firmware compilation verified via Continuous Integration with [.github/workflows/firmware.yml](.github/workflows/firmware.yml)
 
 ## Hardware Features
 
@@ -66,6 +67,7 @@ The [SHIVERS Group](https://github.com/ucalgary-shivers) at the University of Ca
   - USB Mode: "USB-OTG (TinyUSB)"
 - Compile.
 - Tools > Port: select your device.
+  - Note: compilation is verified via Continuous Integration with [.github/workflows/firmware.yml](.github/workflows/firmware.yml), please update documentation and workflow accordingly.
 - Upload.
 
 ## Provenance
