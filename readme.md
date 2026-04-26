@@ -4,10 +4,10 @@
 
 Inspired by [Scott Bezek](https://github.com/scottbez1)'s [SmartKnob](https://github.com/scottbez1/smartknob), [Makerfabs](https://www.makerfabs.com/)' original intention was to create a desktop force feedback knob that could interact with a computer. The project starts with the most important motor, and chooses a large and cheap 3205 motor (the stock of Xiaomi Pentie motor) to achieve a larger form factor, and increases the practical function of Bluetooth HID (Roulette function), which can achieve the same function as the Microsoft Surface Dial. 
 
-The [SHIVERS Group](https://github.com/ucalgary-shivers) at the University of Calgary brings new features:
+The [SHIVERS Group](https://github.com/ucalgary-shivers) at the University of Calgary brings new software features:
 - updated documentation
 
-## Features
+## Hardware Features
 
 - Controller: ESP32-S3
 - Motor: 3205B Brushless Motor
