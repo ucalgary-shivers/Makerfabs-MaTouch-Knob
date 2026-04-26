@@ -12,8 +12,6 @@ Note:
 
 [TOC]
 
-![main](md_pic/main.jpg)
-
 ## Introduction
 
 Inspired by foreign smart knob, the original intention was to create a desktop force feedback knob that could interact with a computer. The project starts with the most important motor, and chooses a large and cheap 3205 motor (the stock of Xiaomi Pentie motor) to achieve a large structure, and increases the practical function of Bluetooth hid (Roulette function), which can achieve the same function as surface dial.
@@ -29,8 +27,6 @@ Inspired by foreign smart knob, the original intention was to create a desktop f
 - USB: USB Native
 - Power Supply: USB Type-C 5.0V(4.0V~5.25V); 3.7V LiPo battery
 - Button: Function button, Flash button and reset button
-
-![main](md_pic/back.jpg)
 
 ## Development
 
